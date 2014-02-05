@@ -39,6 +39,11 @@ wysihtml5.quirks.cleanPastedHTML = (function() {
     
     matches = elementOrHtml = rules = null;
     
+    if (element.innerHTML) {
+      element.innerHTML = element.innerHTML.replace(/<div><br><\/div>/g, '<br>')
+        .replace(/<\/div>/g, '<br>').replace(/<div>/g, '');
+    }
+
     return isString ? element.innerHTML : element;
   }
   
