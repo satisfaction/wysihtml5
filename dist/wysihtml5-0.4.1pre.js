@@ -3387,8 +3387,10 @@ Base = Base.extend({
 wysihtml5.browser = (function() {
   var userAgent   = navigator.userAgent,
       testElement = document.createElement("div"),
-      // Browser sniffing is unfortunately needed since some behaviors are impossible to feature detect
-      isIE        = userAgent.indexOf("MSIE")         !== -1 && userAgent.indexOf("Opera") === -1,
+
+  // Browser sniffing is unfortunately needed since some behaviors are impossible to feature detect
+  var isIE11      = userAgent.indexOf("Trident") !== -1 && userAgent.indexOf(".NET") !== -1,
+      isIE        = isIE11 || (userAgent.indexOf("MSIE") !== -1 && userAgent.indexOf("Opera") === -1),
       isGecko     = userAgent.indexOf("Gecko")        !== -1 && userAgent.indexOf("KHTML") === -1,
       isWebKit    = userAgent.indexOf("AppleWebKit/") !== -1,
       isChrome    = userAgent.indexOf("Chrome/")      !== -1,
