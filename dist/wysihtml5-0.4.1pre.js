@@ -3626,7 +3626,7 @@ wysihtml5.browser = (function() {
      * All browsers except Safari and Chrome automatically scroll the range/caret position into view
      */
     autoScrollsToCaret: function() {
-      return !isWebKit;
+      return !isWebKit && !isIE11;
     },
 
     /**
