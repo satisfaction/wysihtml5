@@ -178,7 +178,7 @@
       dom.addClass(this.link, CLASS_NAME_OPENED);
       this.container.style.display = "";
       this.fire("show");
-      if (firstField && !elementToChange) {
+      if (firstField && firstField.name != 'image' && !elementToChange) {
         try {
           firstField.focus();
         } catch(e) {}
