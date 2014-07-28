@@ -3704,7 +3704,7 @@ wysihtml5.browser = (function() {
      * In IE it's impssible for the user and for the selection library to set the caret after an <img> when it's the lastChild in the document
      */
     hasProblemsSettingCaretAfterImg: function() {
-      return isIE;
+      return isIE && !isIE11;
     },
 
     hasUndoInContextMenu: function() {
