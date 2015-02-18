@@ -5104,6 +5104,21 @@ wysihtml5.dom.parse = (function() {
 
   // ------------ attribute checks ------------ \\
   var attributeCheckMethods = {
+    // returns an empty string for attributes that only need the key name
+    // returns null if anything other than an empty string is passed (since it's invalid)
+    // (as opposed to being in a key/value pair)
+    // eg - "controls" in <video controls></video>
+    novalue: (function() {
+      return function(attributeValue) {
+        if (attributeValue == null || (attributeValue && attributeValue.toString().trim().length == 0)) {
+            return '';
+        }
+        else {
+            return null;
+        }
+      };
+    })(),
+
     url: (function() {
       var REG_EXP = /^https?:\/\//i;
       return function(attributeValue) {
