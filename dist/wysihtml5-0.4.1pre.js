@@ -4813,20 +4813,35 @@ wysihtml5.dom.parse = (function() {
         isString      = typeof(elementOrHtml) === "string",
         element,
         newNode,
-        firstChild;
+        firstChild,
+        beginningChild,
+        endingChild;
 
     if (isString) {
-      element = wysihtml5.dom.getAsDom(elementOrHtml, context);
+      element = wysihtml5.dom.getAsDom(elementOrHtml.trim(), context);
     } else {
       element = elementOrHtml;
     }
+
+    beginningChild = element.firstChild;
+    endingChild = element.lastChild;
 
     while (element.firstChild) {
       firstChild = element.firstChild;
       newNode = _convert(firstChild, cleanUp);
       element.removeChild(firstChild);
       if (newNode) {
+        // insert an invisible space before the video tag when it's at the beginning of the textarea to fix cursor problems
+        if (newNode.nodeName === 'VIDEO' && beginningChild.outerHTML === firstChild.outerHTML) {
+          fragment.appendChild(newNode.ownerDocument.createTextNode(wysihtml5.INVISIBLE_SPACE));
+        }
+
         fragment.appendChild(newNode);
+
+        // insert an invisible space after the video tag when it's at the end of the textarea to fix cursor problems
+        if (newNode.nodeName === 'VIDEO' && endingChild.outerHTML === firstChild.outerHTML) {
+          fragment.appendChild(newNode.ownerDocument.createTextNode(wysihtml5.INVISIBLE_SPACE));
+        }
       }
     }
 
@@ -5141,7 +5156,7 @@ wysihtml5.dom.parse = (function() {
     })(),
 
     alt: (function() {
-      var REG_EXP = /[^ a-z0-9_\-]/gi;
+      var REG_EXP = /[^ a-z0-9_\-\/]/gi;
       return function(attributeValue) {
         if (!attributeValue) {
           return null;
@@ -8599,11 +8614,11 @@ wysihtml5.views.View = Base.extend(
       setTimeout(function() { that.parent.fire("newword:composer"); }, 0);
     });
 
-    // --------- Make sure that images are selected when clicking on them ---------
+    // --------- Make sure that images and videos are selected when clicking on them ---------
     if (!browser.canSelectImagesInContentEditable()) {
       dom.observe(element, "mousedown", function(event) {
         var target = event.target;
-        if (target.nodeName === "IMG") {
+        if (target.nodeName === "IMG" || target.nodeName === "VIDEO") {
           that.selection.selectNode(target);
           event.preventDefault();
         }
