@@ -3456,6 +3456,10 @@ wysihtml5.browser = (function() {
       return isIE;
     },
 
+    isChrome: function () {
+      return isChrome;
+    },
+
     /**
      * IE6+7 throw a mixed content warning when the src of an iframe
      * is empty/unset or about:blank
@@ -8605,7 +8609,7 @@ wysihtml5.views.View = Base.extend(
     // --------- newword event ---------
     dom.observe(element, "keyup", function(event) {
       var keyCode = event.keyCode;
-      if (keyCode === wysihtml5.SPACE_KEY || (!isChrome && keyCode === wysihtml5.ENTER_KEY)) {
+      if (keyCode === wysihtml5.SPACE_KEY || (!wysihtml5.browser.isChrome() && keyCode === wysihtml5.ENTER_KEY)) {
         that.parent.fire("newword:composer");
       }
     });
