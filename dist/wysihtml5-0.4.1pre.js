@@ -3493,6 +3493,10 @@ wysihtml5.browser = (function() {
       return isGecko && navigator.platform.substr(0, 3) === "Mac";
     },
 
+    isFirefox: function () {
+      return isGecko;
+    },
+
     /**
      * Whether the browser inserts a <br> when pressing enter in a contentEditable element
      */
@@ -5989,6 +5993,12 @@ wysihtml5.quirks.ensureProperClearing = (function() {
       if (isEmpty && isElement && canHaveHTML && !avoidInvisibleSpace) {
         // Make sure that caret is visible in node by inserting a zero width no breaking space
         try { node.innerHTML = wysihtml5.INVISIBLE_SPACE; } catch(e) {}
+      }
+
+      if (isElement && node.nodeName === 'VIDEO') {
+        content = node.outerHTML;
+        canHaveHTML = false;
+        isEmpty = (content === "" || content === wysihtml5.INVISIBLE_SPACE);
       }
 
       if (canHaveHTML) {
@@ -8619,7 +8629,7 @@ wysihtml5.views.View = Base.extend(
     });
 
     // --------- Make sure that images and videos are selected when clicking on them ---------
-    if (!browser.canSelectImagesInContentEditable()) {
+    if (!browser.canSelectImagesInContentEditable() || browser.isFirefox()) {
       dom.observe(element, "mousedown", function(event) {
         var target = event.target;
         if (target.nodeName === "IMG" || target.nodeName === "VIDEO") {
